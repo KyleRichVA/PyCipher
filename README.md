@@ -1,0 +1,1 @@
+A Simple Python program which takes text typed or text files and converts them to a 'secret message' which then later can be converted back to readable text. 
