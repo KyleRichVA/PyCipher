@@ -7,6 +7,7 @@ Created by Kyle Richardson
 import shelve
 import string
 import random
+import re
 
 # Set Character Lists for upper and lower case
 LOWER = string.ascii_lowercase
@@ -98,11 +99,21 @@ def stepdict(step):
 
 def menu():
     """Main Menu of the Program first thing that runs."""
-    # testing
-    make_secret(filename='sometext.txt')
-    print("Now I'm gonna read it")
-    read_secret('secret_message')
-
+    print("Welcome To The Python Secret Message Machine")
+    print("Type (W)rite To Create a Message, (R)ead to Read a Message")
+    write_re = re.compile(r'write|w\W*\Z', re.I)
+    read_re = re.compile(r'read|r\W*\Z', re.I)
+    notvalid = True
+    while notvalid:
+        entry = input()
+        if (write_re.search(entry)):
+            notvalid = False
+            print('write would run')
+        elif (read_re.search(entry)):
+            notvalid = False
+            print('read would run')
+        else:
+            print("Please type in a possible option.")
 
 if __name__ == "__main__":
     menu()
