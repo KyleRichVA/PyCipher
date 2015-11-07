@@ -37,6 +37,9 @@ def make_secret(text=None, filename=None):
         else:
             secret_txt = secret_txt + char
     print(secret_txt)
+    message = shelve.open('secret_message')
+    message['text'] = secret_txt
+    message['code'] = code
 
 
 def read_secret(file):
@@ -80,7 +83,10 @@ def codedict(code):
 def menu():
     """Main Menu of the Program first thing that runs."""
     # testing
-    make_secret(text="ZaY")
+    # make_secret(text="Oh dang dog here is some text")
+    print("Now I'm gonna read it")
+    data = shelve.open('secret_message')
+    print(data['text'])
 
 if __name__ == "__main__":
     menu()
