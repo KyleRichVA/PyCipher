@@ -4,7 +4,6 @@ a 'sceret message' which can be converted back to a human readable text
 Created by Kyle Richardson
 '''
 
-import os
 import shelve
 import string
 import random
@@ -31,21 +30,41 @@ def make_secret(text=None, filename=None):
         text = txt.read()
         txt.close()
     secret_txt = ""
+    # convert text to secret text
     for char in text:
         if char in LOWER or char in UPPER:
             secret_txt = secret_txt + cipher[char]
         else:
             secret_txt = secret_txt + char
-    print(secret_txt)
+    # save everything to a database
     message = shelve.open('secret_message')
     message['text'] = secret_txt
     message['code'] = code
 
 
-def read_secret(file):
+def read_secret(filename):
     """read_secret: Takes a secret code file and converts it
     to human readable text"""
-    pass
+    # open up the file and get out the text and cipher code
+    secret = shelve.open(filename)
+    text = secret['text']
+    code = secret['code']
+    secret.close()
+    # convert code to step
+    step = int((code - 12 + 26) / 34)
+    step = step * -1
+    # create the cipher
+    cipher = stepdict(step)
+    read_text = ""
+    # convert the secret text to readable text
+    for char in text:
+        if char in LOWER or char in UPPER:
+            read_text = read_text + cipher[char]
+        else:
+            read_text = read_text + char
+    # print out the text to the terimal
+    print("YOUR SECRET MESSAGE:")
+    print(read_text)
 
 
 def stepdict(step):
@@ -77,16 +96,13 @@ def stepdict(step):
     return cipher
 
 
-def codedict(code):
-    """takes a code anf converts each char based off equation"""
-
 def menu():
     """Main Menu of the Program first thing that runs."""
     # testing
-    # make_secret(text="Oh dang dog here is some text")
+    make_secret(filename='sometext.txt')
     print("Now I'm gonna read it")
-    data = shelve.open('secret_message')
-    print(data['text'])
+    read_secret('secret_message')
+
 
 if __name__ == "__main__":
     menu()
