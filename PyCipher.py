@@ -8,10 +8,13 @@ import shelve
 import string
 import random
 import re
+import os
 
 # Set Character Lists for upper and lower case
 LOWER = string.ascii_lowercase
 UPPER = string.ascii_uppercase
+# Quit Regular Expression
+Qre = re.compile(r'quit\W*\Z|q\W*\Z', re.I)
 
 
 def make_secret(text=None, filename=None):
@@ -41,6 +44,11 @@ def make_secret(text=None, filename=None):
     message = shelve.open('secret_message')
     message['text'] = secret_txt
     message['code'] = code
+    message.close()
+    print('\nMessage Saved to "secret_message.db"')
+    print("Returning to main menu")
+    print("Type (W)rite To Create a Message, (R)ead to Read a Message")
+    print("(Q)uit to exit or go back at any time.")
 
 
 def read_secret(filename):
@@ -101,19 +109,44 @@ def menu():
     """Main Menu of the Program first thing that runs."""
     print("Welcome To The Python Secret Message Machine")
     print("Type (W)rite To Create a Message, (R)ead to Read a Message")
-    write_re = re.compile(r'write|w\W*\Z', re.I)
-    read_re = re.compile(r'read|r\W*\Z', re.I)
-    notvalid = True
-    while notvalid:
+    print("(Q)uit to exit or go back at any time.")
+    write_re = re.compile(r'write\W*\Z|w\W*\Z', re.I)
+    read_re = re.compile(r'read\W*\Z|r\W*\Z', re.I)
+    while True:
         entry = input()
         if (write_re.search(entry)):
-            notvalid = False
-            print('write would run')
+            writemenu()
         elif (read_re.search(entry)):
-            notvalid = False
             print('read would run')
+        elif (Qre.search(entry)):
+            quit()
         else:
             print("Please type in a possible option.")
+
+
+def writemenu():
+    print('''Either type in the message you like to make a secret version of,
+or type in the txt file which you like to translate.
+Program automatic looks in the same folder where this .py file is.''')
+    txt_re = re.compile(r'\w*.txt')
+    while True:
+        entry = input()
+        if (txt_re.search(entry)):  # .txt is entered
+            if (os.path.isfile(entry)):  # a valid file name
+                make_secret(filename=entry)
+                break
+            else:
+                print("Not a valid filename please enter a valid option.")
+                continue
+        elif (Qre.search(entry)):  # (q)uit entered
+            print("Returning to main menu")
+            print("Type (W)rite To Create a Message, (R)ead to Read a Message")
+            print("(Q)uit to exit or go back at any time.")
+            break
+        else:  # plain text entry
+            make_secret(text=entry)
+            break
+
 
 if __name__ == "__main__":
     menu()
